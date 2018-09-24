@@ -21,7 +21,7 @@ export default class App extends React.Component {
             </LinkContainer>
             <LinkContainer to="/login">
               <NavItem eventKey={2}>
-                Signup
+                Login
               </NavItem>
             </LinkContainer>
             <LinkContainer to="/signup">

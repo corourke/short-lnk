@@ -1,43 +1,13 @@
 import React from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import { Meteor } from 'meteor/meteor'
-import { Tracker } from 'meteor/tracker'
-import SimpleSchema from 'simpl-schema'
 
 /* eslint-disable */
 import { Alert, Button, Col, ControlLabel, Form, FormControl, FormGroup, HelpBlock, Nav, Navbar, NavDropdown, MenuItem, NavItem, PageHeader } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 /* eslint-enable */
 
-SimpleSchema.debug = true
-
-const schema = new SimpleSchema({
-  email: {
-    type: String,
-    regEx: SimpleSchema.RegEx.Email,
-  },
-  password: {
-    type: String,
-    min: 4,
-  },
-  fullName: {
-    type: String,
-    optional: true,
-  },
-},{
-  clean: {
-    filter: true,
-    mutate: true,
-    trimStrings: true,
-    removeEmptyStrings: false,
-  },
-},{ tracker: Tracker })
-const validationContext = schema.newContext('formContext')
-
-// Tracker.autorun(function () {
-//   const form = { email: this.state.email, password: this.state.password, fullName: this.state.fullName }
-//   console.log('autorun: ', validationContext.validate(form))
-// })
+import { schema, validateUser, userValidationContext as userVC} from '../api/users'
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -45,39 +15,23 @@ export default class Login extends React.Component {
     this.state = {
       error: '',
       showingFieldValidations: false,
-      email: '',
-      password: '',
-      fullName: '',
+      user: {
+        email: '',
+        password: '',
+      },
     }
-
-    this.handleChange = this.handleChange.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
   }
 
   handleChange(e) {
-    this.setState({ [e.target.id]: e.target.value })
+    let user = this.state.user
+    user[e.target.id] = e.target.value
+    this.setState({ user })
   }
 
-  validateForm() {
-    console.log('validateForm')
-    const form = { email: this.state.email, password: this.state.password, fullName: this.state.fullName }
-    console.log('validate: ', validationContext.validate(form)) // eslint-disable-line
-    console.log('validator: ', validationContext) // eslint-disable-line
-    return validationContext.validate(form)
-  }
-
-  validateEmail() {
-    // return: success, warning, error or null
+  getValidationState(fieldId) {
     if(!this.state.showingFieldValidations) return null
-    validationContext.validate({email: this.state.email})
-    return validationContext.keyIsInvalid('email') ? 'error' : null
-  }
-
-  validatePassword() {
-    // return: success, warning, error or null
-    if(!this.state.showingFieldValidations) return null
-    validationContext.validate({password: this.state.password})
-    return validationContext.keyIsInvalid('password') ? 'error' : null
+    userVC.validate({ [fieldId]: this.state.user[fieldId]})
+    return userVC.keyIsInvalid(fieldId) ? 'error' : null
   }
 
   clearFieldErrors() {
@@ -99,15 +53,14 @@ export default class Login extends React.Component {
 
   onSubmit(e) {
     e.preventDefault()
-    const email = this.state.email
-    const password = this.state.password
-    if(this.validateForm() == false) {
+    if(validateUser(this.state.user) == false) {
       this.setState({
         error: 'Please correct the invalid fields below',
         showingFieldValidations: true,
       })
       return
     }
+    const {email, password} = this.state.user
     Meteor.loginWithPassword(email, password, (err) => {
       if(err) {
         this.setState({ error: err.reason})
@@ -134,9 +87,9 @@ export default class Login extends React.Component {
         </form> */}
 
 
-        <Form horizontal noValidate onSubmit={this.onSubmit}>
+        <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
 
-          <FormGroup controlId="email" validationState={this.validateEmail()}>
+          <FormGroup controlId="email" validationState={this.getValidationState('email')}>
             <Col componentClass={ControlLabel} sm={2}>
       Email
             </Col>
@@ -145,45 +98,32 @@ export default class Login extends React.Component {
                 type="email"
                 placeholder="Email"
                 autoComplete="email"
-                value={this.state.email}
-                onChange={this.handleChange}
+                value={this.state.user.email}
+                onChange={this.handleChange.bind(this)}
               />
               <FormControl.Feedback />
-              { validationContext.keyIsInvalid('email')
+              { userVC.keyIsInvalid('email')
                 ? <HelpBlock>Email must be a valid address, like: name@something.com</HelpBlock>
                 : undefined
               }
             </Col>
           </FormGroup>
 
-          <FormGroup controlId="password" validationState={this.validatePassword()}>
+          <FormGroup controlId="password" validationState={this.getValidationState('password')}>
             <Col sm={2} componentClass={ControlLabel}>Password</Col>
             <Col sm={10}>
               <FormControl
                 type="password"
                 placeholder="Password"
                 autoComplete="new-password"
-                value={this.state.password}
-                onChange={this.handleChange}
+                value={this.state.user.password}
+                onChange={this.handleChange.bind(this)}
               />
               <FormControl.Feedback />
-              { validationContext.keyIsInvalid('password')
-                ? <HelpBlock>Password must be at least 4 characters long.</HelpBlock>
+              { userVC.keyIsInvalid('password')
+                ? <HelpBlock>{userVC.keyErrorMessage('password')}</HelpBlock>
                 : undefined
               }
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="fullName">
-            <Col sm={2} componentClass={ControlLabel}>Real Name</Col>
-            <Col sm={10}>
-              <FormControl
-                type="text"
-                value={this.state.fullName}
-                placeholder="What should we call you?"
-                onChange={this.handleChange}
-              />
-              <FormControl.Feedback />
             </Col>
           </FormGroup>
 
