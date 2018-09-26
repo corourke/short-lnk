@@ -62,7 +62,7 @@ export default class Signup extends React.Component {
       return
     }
     const {email, password,fullName} = this.state.user
-    Accounts.createUser({email, password,profile:{name: fullName}}, (err) => {
+    Accounts.createUser({email, password, profile:{name: fullName}}, (err) => {
       if(err) {
         this.setState({ error: err.reason})
       } else {
