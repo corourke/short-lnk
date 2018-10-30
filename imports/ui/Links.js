@@ -1,7 +1,7 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import { Meteor } from 'meteor/meteor'
-import { Button, Nav, Navbar, NavDropdown, MenuItem, NavItem } from 'react-bootstrap'
+import { Button, Nav, Navbar, NavDropdown, MenuItem, NavItem, PageHeader } from 'react-bootstrap'
 
 
 
@@ -23,12 +23,11 @@ export default class Links extends React.Component {
       return <Redirect to="/login" />
     }
     return (
-      <div className="wrapper">
-        <h1>Links</h1>
-        <div className="container">
-          <button className="button" onClick={this.onSubmit.bind(this)}>Log Out</button>
-        </div>
-      </div>)
+      <div>
+        <PageHeader>Sign Up</PageHeader>
+        <Button type='button' onClick={this.onSubmit.bind(this)}>Log Out</Button>
+      </div>
+    )
 
   }
 }

@@ -9,6 +9,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 /* eslint-enable */
 
 import { validateUser, userValidationContext as userVC} from '../api/users'
+import FormItem from './FormItem'
 
 export default class Signup extends React.Component {
   constructor(props) {
@@ -83,12 +84,17 @@ export default class Signup extends React.Component {
         { this.renderError() }
 
         <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
+          <FormItem
+            name="email" type="email" autoComplete="email" label="Email"
+            help="Email must be a valid address, like: name@something.com"
+            value={this.state.user.email}
+            onChange={() => this.handleChange.bind(this)}
+            onValidate={() => this.getValidationState('email')}
+          />
 
           <FormGroup controlId="email" validationState={this.getValidationState('email')}>
-            <Col componentClass={ControlLabel} sm={2}>
-      Email
-            </Col>
-            <Col sm={10}>
+            <Col componentClass={ControlLabel} sm={2}>Email</Col>
+            <Col sm={9}>
               <FormControl
                 type="email"
                 placeholder="Email"
@@ -106,7 +112,7 @@ export default class Signup extends React.Component {
 
           <FormGroup controlId="password" validationState={this.getValidationState('password')}>
             <Col sm={2} componentClass={ControlLabel}>Password</Col>
-            <Col sm={10}>
+            <Col sm={9}>
               <FormControl
                 type="password"
                 placeholder="Password"
