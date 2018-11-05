@@ -18,14 +18,14 @@ export const schema = new SimpleSchema({
     type: String,
     optional: true,
   },
-},{
+}, {
   clean: {
     filter: true,
     mutate: true,
     trimStrings: true,
     removeEmptyStrings: false,
   },
-},{ tracker: Tracker })
+}, { tracker: Tracker })
 
 export const userValidationContext = schema.namedContext('userContext')
 
@@ -38,11 +38,11 @@ export function validateUser(user) {
 // The user object is the Mongo document
 export function setServerUserValidation() {
   Accounts.validateNewUser((user) => {
-    console.log('in validateNewuser: ', user)
+    console.log('in validateNewuser: ', user) // eslint-disable-line
     const email = user.emails[0].address
-    console.log('   email: ', email)
+    console.log('   email: ', email) // eslint-disable-line
     userValidationContext.validate({ email })
-    if(userValidationContext.keyIsInvalid('email')) {
+    if (userValidationContext.keyIsInvalid('email')) {
       throw new Meteor.Error(400, userValidationContext.keyErrorMessage('email'))
     } else {
       return true

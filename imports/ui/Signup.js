@@ -92,41 +92,13 @@ export default class Signup extends React.Component {
             onValidate={() => this.getValidationState('email')}
           />
 
-          <FormGroup controlId="email" validationState={this.getValidationState('email')}>
-            <Col componentClass={ControlLabel} sm={2}>Email</Col>
-            <Col sm={9}>
-              <FormControl
-                type="email"
-                placeholder="Email"
-                autoComplete="email"
-                value={this.state.user.email}
-                onChange={this.handleChange.bind(this)}
-              />
-              <FormControl.Feedback />
-              { userVC.keyIsInvalid('email')
-                ? <HelpBlock>Email must be a valid address, like: name@something.com</HelpBlock>
-                : undefined
-              }
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="password" validationState={this.getValidationState('password')}>
-            <Col sm={2} componentClass={ControlLabel}>Password</Col>
-            <Col sm={9}>
-              <FormControl
-                type="password"
-                placeholder="Password"
-                autoComplete="new-password"
-                value={this.state.user.password}
-                onChange={this.handleChange.bind(this)}
-              />
-              <FormControl.Feedback />
-              { userVC.keyIsInvalid('password')
-                ? <HelpBlock>{userVC.keyErrorMessage('password')}</HelpBlock>
-                : undefined
-              }
-            </Col>
-          </FormGroup>
+          <FormItem
+            name="password" type="password" autoComplete="new-password" label="Password"
+            help={userVC.keyErrorMessage('password')}
+            value={this.state.user.password}
+            onChange={() => this.handleChange.bind(this)}
+            onValidate={() => this.getValidationState('password')}
+          />
 
           <FormGroup controlId="fullName">
             <Col sm={2} componentClass={ControlLabel}>Real Name</Col>
