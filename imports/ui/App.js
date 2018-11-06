@@ -1,6 +1,6 @@
 import React from 'react'
 import { Meteor } from 'meteor/meteor'
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import { Col, Button, Glyphicon, Grid, Nav, Navbar, NavItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
@@ -9,18 +9,19 @@ import LinkPage from './LinkPage'
 import Login from './Login'
 import NotFound from './NotFound'
 
-export default class App extends React.Component {
-  onSubmit(e) {
-    e.preventDefault()
-    Meteor.logout((err) => {
-      if(err) {
-        this.setState({ error: err.reason})
-      } else {
-        this.props.history.push('/') // eslint-disable-line
-      }
-    })
-  }
+const AuthButton = withRouter(
+  ({ history }) => (
 
+    <Button onClick={() => {
+      Meteor.logout()
+      history.push('/')
+    }}
+    > Log out
+      <Glyphicon glyph="log-out" />
+    </Button>
+  ))
+
+export default class App extends React.Component {
 
   render() {
     return (
@@ -52,11 +53,7 @@ export default class App extends React.Component {
                 </Nav>
 
                 <Navbar.Form pullRight>
-
-                  <Button onClick={this.onSubmit.bind(this)}>
-                      Log Out &nbsp;<Glyphicon glyph="log-out" />
-                  </Button>
-              
+                  <AuthButton />
                 </Navbar.Form>
               </Navbar.Collapse>
             </Navbar>

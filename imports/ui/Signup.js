@@ -55,6 +55,7 @@ export default class Signup extends React.Component {
 
   onSubmit(e) {
     e.preventDefault()
+    // TODO: using validationContext here instead of method call
     if(validateUser(this.state.user) == false) {
       this.setState({
         error: 'Please correct the invalid fields below',
