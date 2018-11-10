@@ -30,8 +30,8 @@ export default class LinkPage extends React.Component {
     this.setState({ link })
   }
 
-  // TODO: This is lame to return 'error', return the actual validation error
-  // validate the schema once, and then use the reactive keyIsInvalid and keyErrorMessage in the FormItem
+  // TODO: 'error' or null is needed by the FormGroup component
+  // which is an implementation detail that should be pushed down to FormItem
   getValidationState(fieldId) {
     if(!this.state.showingFieldValidations) return null
     VC.validate({ [fieldId]: this.state.link[fieldId]})
@@ -50,7 +50,7 @@ export default class LinkPage extends React.Component {
       })
       return
     }
-    Meteor.call('links.insert', link, (err, res) => {
+    Meteor.call('links.insert', link, (err) => {
       if(err) {
         this.setState({ error: err.message })
       } else {
@@ -93,8 +93,8 @@ export default class LinkPage extends React.Component {
         <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
           <FormItem
             name="url" type="text" label="Link URL"
-            help="Link must be a valid URL"
             placeholder="URL"
+            help={VC.keyErrorMessage('url')}
             value={this.state.link.url}
             onChange={() => this.handleChange.bind(this)}
             onValidate={() => this.getValidationState('url')}
@@ -102,6 +102,7 @@ export default class LinkPage extends React.Component {
           <FormItem
             name="name" type="text" label="Link Name"
             placeholder="Name"
+            help={VC.keyErrorMessage('name')}
             value={this.state.link.name}
             onChange={() => this.handleChange.bind(this)}
             onValidate={() => this.getValidationState('name')}

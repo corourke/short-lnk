@@ -7,7 +7,7 @@ import { Alert, Button, Col, ControlLabel, Form, FormControl, FormGroup, HelpBlo
 import { LinkContainer } from 'react-router-bootstrap'
 /* eslint-enable */
 
-import { schema, validateUser, userValidationContext as userVC} from '../api/users'
+import { validateUser, ValidationContext as VC} from '../api/users'
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -30,8 +30,8 @@ export default class Login extends React.Component {
 
   getValidationState(fieldId) {
     if(!this.state.showingFieldValidations) return null
-    userVC.validate({ [fieldId]: this.state.user[fieldId]})
-    return userVC.keyIsInvalid(fieldId) ? 'error' : null
+    VC.validate({ [fieldId]: this.state.user[fieldId]})
+    return VC.keyIsInvalid(fieldId) ? 'error' : null
   }
 
   clearFieldErrors() {
@@ -80,19 +80,10 @@ export default class Login extends React.Component {
 
         { this.renderError() }
 
-        {/* <form onSubmit={this.onSubmit.bind(this)}>
-          <input type="email" name="email" ref={this.email} autoComplete="email" placeholder="eMail" />
-          <input type="password" name="password" ref={this.password} autoComplete="new-password" placeholder="Password" />
-          <button>Sign In</button>
-        </form> */}
-
-
         <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
 
           <FormGroup controlId="email" validationState={this.getValidationState('email')}>
-            <Col componentClass={ControlLabel} sm={2}>
-      Email
-            </Col>
+            <Col componentClass={ControlLabel} sm={2}>Email</Col>
             <Col sm={10}>
               <FormControl
                 type="email"
@@ -102,7 +93,7 @@ export default class Login extends React.Component {
                 onChange={this.handleChange.bind(this)}
               />
               <FormControl.Feedback />
-              { userVC.keyIsInvalid('email')
+              { this.getValidationState('email')
                 ? <HelpBlock>Email must be a valid address, like: name@something.com</HelpBlock>
                 : undefined
               }
@@ -120,8 +111,8 @@ export default class Login extends React.Component {
                 onChange={this.handleChange.bind(this)}
               />
               <FormControl.Feedback />
-              { userVC.keyIsInvalid('password')
-                ? <HelpBlock>{userVC.keyErrorMessage('password')}</HelpBlock>
+              { this.getValidationState('password')
+                ? <HelpBlock>{VC.keyErrorMessage('password')}</HelpBlock>
                 : undefined
               }
             </Col>

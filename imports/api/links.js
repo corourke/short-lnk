@@ -7,11 +7,14 @@ export const Links = new Mongo.Collection('links')
 export const schema = new SimpleSchema({
   url: {
     type: String,
-    label: 'Link URL',
+    label: 'Link',
     regEx: SimpleSchema.RegEx.Url,
   },
-  name: String,
-})
+  name: {
+    type: String,
+    min: 1,
+    label: 'Link Name',
+  }})
 
 export const validationContext = schema.namedContext('linksContext')
 
@@ -25,20 +28,10 @@ if (Meteor.isServer) {
 
 Meteor.methods({
   'links.insert'(link) {
-
     if(!this.userId) {
       throw new Meteor.Error('not-authorized', 'User must be logged in')
     }
-
-    if(!link.url) {
-      throw new Meteor.Error('missing-property', 'Link needs a url property')
-    }
-
     validationContext.validate(link)
-    if(!validationContext.isValid()) {
-      throw new Meteor.Error('validation-error', `Validation error in field: ${validationContext.validationErrors()[0].name}`)
-    }
-
     Links.insert({userId: this.userId, url: link.url, name: link.name})
 
   },

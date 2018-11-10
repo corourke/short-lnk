@@ -8,7 +8,7 @@ import { Alert, Button, Col, ControlLabel, Form, FormControl, FormGroup, HelpBlo
 import { LinkContainer } from 'react-router-bootstrap'
 /* eslint-enable */
 
-import { validateUser, userValidationContext as userVC} from '../api/users'
+import { validateUser, ValidationContext as VC} from '../api/users'
 import FormItem from './FormItem'
 
 export default class Signup extends React.Component {
@@ -33,8 +33,8 @@ export default class Signup extends React.Component {
 
   getValidationState(fieldId) {
     if(!this.state.showingFieldValidations) return null
-    userVC.validate({ [fieldId]: this.state.user[fieldId]})
-    return userVC.keyIsInvalid(fieldId) ? 'error' : null
+    VC.validate({ [fieldId]: this.state.user[fieldId]})
+    return VC.keyIsInvalid(fieldId) ? 'error' : null
   }
 
   clearFieldErrors() {
@@ -87,7 +87,7 @@ export default class Signup extends React.Component {
         <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
           <FormItem
             name="email" type="email" autoComplete="email" label="Email"
-            help="Email must be a valid address, like: name@something.com"
+            help={VC.keyErrorMessage('email')}
             value={this.state.user.email}
             onChange={() => this.handleChange.bind(this)}
             onValidate={() => this.getValidationState('email')}
@@ -95,24 +95,20 @@ export default class Signup extends React.Component {
 
           <FormItem
             name="password" type="password" autoComplete="new-password" label="Password"
-            help={userVC.keyErrorMessage('password')}
+            help={VC.keyErrorMessage('password')}
             value={this.state.user.password}
             onChange={() => this.handleChange.bind(this)}
             onValidate={() => this.getValidationState('password')}
           />
 
-          <FormGroup controlId="fullName">
-            <Col sm={2} componentClass={ControlLabel}>Real Name</Col>
-            <Col sm={10}>
-              <FormControl
-                type="text"
-                value={this.state.user.fullName}
-                placeholder="What should we call you?"
-                onChange={this.handleChange.bind(this)}
-              />
-              <FormControl.Feedback />
-            </Col>
-          </FormGroup>
+          <FormItem
+            name="fullName" type="text" label="Real Name"
+            help={VC.keyErrorMessage('fullName')}
+            value={this.state.user.fullName}
+            placeholder="What should we call you?"
+            onChange={() => this.handleChange.bind(this)}
+            onValidate={() => this.getValidationState('fullName')}
+          />
 
           <FormGroup>
             <Col smOffset={2} sm={10}>

@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor'
 import { Accounts } from 'meteor/accounts-base'
 import { Tracker } from 'meteor/tracker'
 import SimpleSchema from 'simpl-schema'
@@ -27,10 +26,10 @@ export const schema = new SimpleSchema({
   },
 }, { tracker: Tracker })
 
-export const userValidationContext = schema.namedContext('userContext')
+export const ValidationContext = schema.namedContext('userContext')
 
 export function validateUser(user) {
-  return userValidationContext.validate(user)
+  return ValidationContext.validate(user)
 }
 
 // --- Server Side --- //
@@ -38,14 +37,7 @@ export function validateUser(user) {
 // The user object is the Mongo document
 export function setServerUserValidation() {
   Accounts.validateNewUser((user) => {
-    console.log('in validateNewuser: ', user) // eslint-disable-line
-    const email = user.emails[0].address
-    console.log('   email: ', email) // eslint-disable-line
-    userValidationContext.validate({ email })
-    if (userValidationContext.keyIsInvalid('email')) {
-      throw new Meteor.Error(400, userValidationContext.keyErrorMessage('email'))
-    } else {
-      return true
-    }
+    ValidationContext.validate({ user })
+    return true
   })
 }
