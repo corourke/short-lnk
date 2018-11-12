@@ -9,17 +9,20 @@ import LinkPage from './LinkPage'
 import Login from './Login'
 import NotFound from './NotFound'
 
-const AuthButton = withRouter(
-  ({ history }) => (
+// console.log(history)
+// console.log(this.history)
+// console.log(this.context.history)
+// console.log(this.props.history)
 
-    <Button onClick={() => {
-      Meteor.logout()
-      history.push('/')
-    }}
-    > Log out
+
+const AuthButton = withRouter( (router) => {
+  return (
+    <Button onClick={ () => Meteor.logout(() => router.history.push('/login')) }>
+        Log out
       <Glyphicon glyph="log-out" />
     </Button>
-  ))
+  )
+})
 
 export default class App extends React.Component {
 
@@ -59,6 +62,7 @@ export default class App extends React.Component {
             </Navbar>
 
             <Switch>
+              // Middleware first checks for a shortlink match in the database
               <Redirect exact from="/" to="/login" />
               <Route path="/login" component={Login} />
               <Route path="/signup" component={Signup} />

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Meteor } from 'meteor/meteor'
 import { Tracker } from 'meteor/tracker'
-import { Button, Col, Form, FormGroup, PageHeader } from 'react-bootstrap'
+import { Panel } from 'react-bootstrap'
 
 import { Links } from '../api/links'
 
@@ -30,9 +30,12 @@ export default class LinksList extends React.Component {
   renderLinksList() {
     return this.state.links.map( (i) => {
       return (
-        <p key={i._id}>{i.url}</p>
+        <Panel key={i._id} className='link'>
+          <Panel.Heading>{i.name}</Panel.Heading>
+          <Panel.Body>Short URL: <a href={i._id}>http://localhost:3000/{i._id}</a></Panel.Body>
+        </Panel>
       )
-    } )
+    })
   }
 
   render() {

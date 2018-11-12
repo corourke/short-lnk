@@ -1,12 +1,11 @@
 import React from 'react'
 import { Redirect, Link } from 'react-router-dom'
-import { Accounts } from 'meteor/accounts-base'
 import { Meteor } from 'meteor/meteor'
+import { Accounts } from 'meteor/accounts-base'
 
-/* eslint-disable */
-import { Alert, Button, Col, ControlLabel, Form, FormControl, FormGroup, HelpBlock, Nav, Navbar, NavDropdown, MenuItem, NavItem, PageHeader } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
-/* eslint-enable */
+import { Alert, Button, Col, Form, FormGroup, PageHeader } from 'react-bootstrap'
+
+
 
 import { validateUser, ValidationContext as VC} from '../api/users'
 import FormItem from './FormItem'
@@ -68,7 +67,7 @@ export default class Signup extends React.Component {
       if(err) {
         this.setState({ error: err.reason})
       } else {
-        this.props.history.push('/') // eslint-disable-line
+        this.props.history.push('/links') // eslint-disable-line
       }
     })
   }

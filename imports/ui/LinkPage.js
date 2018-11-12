@@ -107,12 +107,12 @@ export default class LinkPage extends React.Component {
             onChange={() => this.handleChange.bind(this)}
             onValidate={() => this.getValidationState('name')}
           />
-
           <FormGroup>
             <Col smOffset={2} sm={10}>
               <Button type="submit">Add Link</Button>
             </Col>
           </FormGroup>
+
         </Form>
       </div>
     )

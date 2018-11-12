@@ -65,7 +65,7 @@ export default class Login extends React.Component {
       if(err) {
         this.setState({ error: err.reason})
       } else {
-        this.props.history.push('/') // eslint-disable-line
+        this.props.history.push('/links') // eslint-disable-line
       }
     })
   }
