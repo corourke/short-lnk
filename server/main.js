@@ -12,6 +12,7 @@ Meteor.startup(() => {
   // code to run on server at startup
   setServerUserValidation()
 
+  // Handler to check for existing links and redirect if one is found
   const redirectShortLinks = (req, res, next) => {
     const _id = req.url.slice(1)  // remove the initial slash
     const link = Links.findOne({ _id }) // check the DB for a link
