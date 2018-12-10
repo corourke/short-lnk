@@ -2,65 +2,32 @@ import React from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import { Meteor } from 'meteor/meteor'
 
-/* eslint-disable */
-import { Alert, Button, Col, ControlLabel, Form, FormControl, FormGroup, HelpBlock, Nav, Navbar, NavDropdown, MenuItem, NavItem, PageHeader } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
-/* eslint-enable */
+import { Button, Col, Form, FormGroup, PageHeader } from 'react-bootstrap'
 
-import { validateUser, ValidationContext as VC} from '../api/users'
+import { validateUser, getValidationContext} from '../api/users'
+import SimpleForm from './SimpleForm'
+import FormItem from './FormItem'
 
-export default class Login extends React.Component {
+export default class Login extends SimpleForm {
   constructor(props) {
     super(props)
-    this.state = {
-      error: '',
-      showingFieldValidations: false,
-      user: {
-        email: '',
-        password: '',
-      },
+    this.state.fields = {
+      email: '',
+      password: '',
     }
+    this.state.VC = getValidationContext()
   }
-
-  handleChange(e) {
-    let user = this.state.user
-    user[e.target.id] = e.target.value
-    this.setState({ user })
-  }
-
-  getValidationState(fieldId) {
-    if(!this.state.showingFieldValidations) return null
-    VC.validate({ [fieldId]: this.state.user[fieldId]})
-    return VC.keyIsInvalid(fieldId) ? 'error' : null
-  }
-
-  clearFieldErrors() {
-    this.setState({
-      error: undefined,
-      showingFieldValidations: false,
-    })
-  }
-
-  renderError() {
-    if(this.state.error){
-      return (
-        <Alert bsStyle="danger" onDismiss={() => this.clearFieldErrors()}>
-          <p className="error">{this.state.error}</p>
-        </Alert>
-      )}
-  }
-
 
   onSubmit(e) {
     e.preventDefault()
-    if(validateUser(this.state.user) == false) {
+    if(validateUser(this.state.fields) == false) {
       this.setState({
         error: 'Please correct the invalid fields below',
         showingFieldValidations: true,
       })
       return
     }
-    const {email, password} = this.state.user
+    const {email, password} = this.state.fields
     Meteor.loginWithPassword(email, password, (err) => {
       if(err) {
         this.setState({ error: err.reason})
@@ -82,41 +49,21 @@ export default class Login extends React.Component {
 
         <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
 
-          <FormGroup controlId="email" validationState={this.getValidationState('email')}>
-            <Col componentClass={ControlLabel} sm={2}>Email</Col>
-            <Col sm={10}>
-              <FormControl
-                type="email"
-                placeholder="Email"
-                autoComplete="email"
-                value={this.state.user.email}
-                onChange={this.handleChange.bind(this)}
-              />
-              <FormControl.Feedback />
-              { this.getValidationState('email')
-                ? <HelpBlock>Email must be a valid address, like: name@something.com</HelpBlock>
-                : undefined
-              }
-            </Col>
-          </FormGroup>
+          <FormItem
+            name="email" type="email" autoComplete="email" label="Email"
+            help={this.state.VC.keyErrorMessage('email')}
+            value={this.state.fields.email}
+            onChange={() => this.handleChange.bind(this)}
+            onValidate={() => this.getValidationState('email')}
+          />
 
-          <FormGroup controlId="password" validationState={this.getValidationState('password')}>
-            <Col sm={2} componentClass={ControlLabel}>Password</Col>
-            <Col sm={10}>
-              <FormControl
-                type="password"
-                placeholder="Password"
-                autoComplete="new-password"
-                value={this.state.user.password}
-                onChange={this.handleChange.bind(this)}
-              />
-              <FormControl.Feedback />
-              { this.getValidationState('password')
-                ? <HelpBlock>{VC.keyErrorMessage('password')}</HelpBlock>
-                : undefined
-              }
-            </Col>
-          </FormGroup>
+          <FormItem
+            name="password" type="password" autoComplete="new-password" label="Password"
+            help={this.state.VC.keyErrorMessage('password')}
+            value={this.state.fields.password}
+            onChange={() => this.handleChange.bind(this)}
+            onValidate={() => this.getValidationState('password')}
+          />
 
           <FormGroup>
             <Col smOffset={2} sm={10}>

@@ -2,54 +2,28 @@ import React from 'react'
 import { Meteor } from 'meteor/meteor'
 import { Alert, Button, Col, Form, FormGroup } from 'react-bootstrap'
 
+import { getValidationContext } from '../api/links'
+import SimpleForm from './SimpleForm'
 import FormItem from './FormItem'
 
-import { validationContext as VC } from '../api/links'
 
-export default class LinkForm extends React.Component {
+
+export default class LinkForm extends SimpleForm {
   constructor(props) {
     super(props)
-    this.state = {
-      error: '',
-      showingFieldValidations: false,
-      link: {
-        name: '',
-        url: '',
-        shortlnk: '',
-      },
+    this.state.fields = {
+      name: '',
+      url: '',
+      shortlnk: '',
     }
+    this.state.VC = getValidationContext()
   }
-
-  // TODO: consolidate error handling into the App component if possible
-  renderError() {
-    if(this.state.error){
-      return (
-        <Alert bsStyle="danger" onDismiss={() => this.clearFieldErrors()}>
-          <p className="error">{this.state.error}</p>
-        </Alert>
-      )}
-  }
-
-  handleChange(e) {
-    let link = this.state.link
-    link[e.target.id] = e.target.value
-    this.setState({ link })
-  }
-
-  // TODO: Literal string 'error' or null is needed by the FormGroup component
-  // which is an implementation detail that should be pushed down to FormItem
-  getValidationState(fieldId) {
-    if(!this.state.showingFieldValidations) return null
-    VC.validate({ [fieldId]: this.state.link[fieldId]})
-    return VC.keyIsInvalid(fieldId) ? 'error' : null
-  }
-
 
   onSubmit(e) {
     e.preventDefault()
-    const { url, name } = this.state.link
+    const { url, name } = this.state.fields
     const link = { url, name }
-    if(VC.validate(link) == false) {
+    if(this.state.VC.validate(link) == false) {
       this.setState({
         error: 'Please correct the invalid fields below',
         showingFieldValidations: true,
@@ -60,37 +34,32 @@ export default class LinkForm extends React.Component {
       if(err) {
         this.setState({ error: err.message })
       } else {
-        this.setState({ link: { name: '', url: '', shortlnk: '' }})
+        this.setState({ fields: { name: '', url: '', shortlnk: '' }})
         this.clearFieldErrors()
       }
     })
 
   }
 
-  clearFieldErrors() {
-    this.setState({
-      error: undefined,
-      showingFieldValidations: false,
-    })
-  }
-
   render() {
     return (
       <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
+
         { this.renderError() }
+        
         <FormItem
           name="url" type="text" label="Link URL"
           placeholder="URL"
-          help={VC.keyErrorMessage('url')}
-          value={this.state.link.url}
+          help={this.state.VC.keyErrorMessage('url')}
+          value={this.state.fields.url}
           onChange={() => this.handleChange.bind(this)}
           onValidate={() => this.getValidationState('url')}
         />
         <FormItem
           name="name" type="text" label="Link Name"
           placeholder="Name"
-          help={VC.keyErrorMessage('name')}
-          value={this.state.link.name}
+          help={this.state.VC.keyErrorMessage('name')}
+          value={this.state.fields.name}
           onChange={() => this.handleChange.bind(this)}
           onValidate={() => this.getValidationState('name')}
         />

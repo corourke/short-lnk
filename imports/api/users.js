@@ -26,7 +26,11 @@ export const schema = new SimpleSchema({
   },
 }, { tracker: Tracker })
 
-export const ValidationContext = schema.namedContext('userContext')
+const ValidationContext = schema.namedContext('userContext')
+
+export function getValidationContext() {
+  return ValidationContext
+}
 
 export function validateUser(user) {
   return ValidationContext.validate(user)

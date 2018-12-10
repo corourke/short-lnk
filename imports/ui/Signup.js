@@ -3,66 +3,34 @@ import { Redirect, Link } from 'react-router-dom'
 import { Meteor } from 'meteor/meteor'
 import { Accounts } from 'meteor/accounts-base'
 
-import { Alert, Button, Col, Form, FormGroup, PageHeader } from 'react-bootstrap'
+import { Button, Col, Form, FormGroup, PageHeader } from 'react-bootstrap'
 
-
-
-import { validateUser, ValidationContext as VC} from '../api/users'
+import { validateUser, getValidationContext} from '../api/users'
+import SimpleForm from './SimpleForm'
 import FormItem from './FormItem'
 
-export default class Signup extends React.Component {
+export default class Signup extends SimpleForm {
   constructor(props) {
     super(props)
-    this.state = {
-      error: '',
-      showingFieldValidations: false,
-      user: {
-        email: '',
-        password: '',
-        fullName: '',
-      },
+    this.state.fields = {
+      email: '',
+      password: '',
+      fullName: '',
     }
-  }
-
-  handleChange(e) {
-    let user = this.state.user
-    user[e.target.id] = e.target.value
-    this.setState({ user })
-  }
-
-  getValidationState(fieldId) {
-    if(!this.state.showingFieldValidations) return null
-    VC.validate({ [fieldId]: this.state.user[fieldId]})
-    return VC.keyIsInvalid(fieldId) ? 'error' : null
-  }
-
-  clearFieldErrors() {
-    this.setState({
-      error: undefined,
-      showingFieldValidations: false,
-    })
-  }
-
-  renderError() {
-    if(this.state.error){
-      return (
-        <Alert bsStyle="danger" onDismiss={() => this.clearFieldErrors()}>
-          <p className="error">{this.state.error}</p>
-        </Alert>
-      )}
+    this.state.VC = getValidationContext()
   }
 
   onSubmit(e) {
     e.preventDefault()
     // TODO: using validationContext here instead of method call
-    if(validateUser(this.state.user) == false) {
+    if(validateUser(this.state.fields) == false) {
       this.setState({
         error: 'Please correct the invalid fields below',
         showingFieldValidations: true,
       })
       return
     }
-    const {email, password,fullName} = this.state.user
+    const {email, password,fullName} = this.state.fields
     Accounts.createUser({email, password, profile:{name: fullName}}, (err) => {
       if(err) {
         this.setState({ error: err.reason})
@@ -86,24 +54,24 @@ export default class Signup extends React.Component {
         <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
           <FormItem
             name="email" type="email" autoComplete="email" label="Email"
-            help={VC.keyErrorMessage('email')}
-            value={this.state.user.email}
+            help={this.state.VC.keyErrorMessage('email')}
+            value={this.state.fields.email}
             onChange={() => this.handleChange.bind(this)}
             onValidate={() => this.getValidationState('email')}
           />
 
           <FormItem
             name="password" type="password" autoComplete="new-password" label="Password"
-            help={VC.keyErrorMessage('password')}
-            value={this.state.user.password}
+            help={this.state.VC.keyErrorMessage('password')}
+            value={this.state.fields.password}
             onChange={() => this.handleChange.bind(this)}
             onValidate={() => this.getValidationState('password')}
           />
 
           <FormItem
             name="fullName" type="text" label="Real Name"
-            help={VC.keyErrorMessage('fullName')}
-            value={this.state.user.fullName}
+            help={this.state.VC.keyErrorMessage('fullName')}
+            value={this.state.fields.fullName}
             placeholder="What should we call you?"
             onChange={() => this.handleChange.bind(this)}
             onValidate={() => this.getValidationState('fullName')}

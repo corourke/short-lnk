@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { Meteor } from 'meteor/meteor'
 import { Button, Nav, Navbar, NavItem, PageHeader} from 'react-bootstrap'
@@ -37,7 +38,7 @@ class PrivateHeader extends React.Component {
             </Nav>
 
             <Navbar.Form pullRight style={{paddingRight: '0px'}}>
-              <Button onClick={ () => Meteor.logout(() => this.history.push('/login')) }>
+              <Button onClick={ () => Meteor.logout(() => this.props.history.push('/login')) }>
               Log Out
               </Button>
             </Navbar.Form>
@@ -50,6 +51,9 @@ class PrivateHeader extends React.Component {
   }
 }
 
-// TODO: Add propthypes
-
 export default withRouter(PrivateHeader)
+
+PrivateHeader.propTypes = {
+  history: PropTypes.object.isRequired,
+  children: PropTypes.node,
+}
