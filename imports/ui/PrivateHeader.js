@@ -7,6 +7,8 @@ import { LinkContainer } from 'react-router-bootstrap'
 
 class PrivateHeader extends React.Component {
 
+  // TODO: This menu bar doesn't really make sense for this application
+
   render() {
     return (
       <div>
@@ -47,5 +49,7 @@ class PrivateHeader extends React.Component {
     )
   }
 }
+
+// TODO: Add propthypes
 
 export default withRouter(PrivateHeader)
