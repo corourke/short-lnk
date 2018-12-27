@@ -2,7 +2,7 @@ import React from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import { Meteor } from 'meteor/meteor'
 
-import { Button, Col, Form, FormGroup, PageHeader } from 'react-bootstrap'
+import { Button, Col, Form as FormLayout, FormGroup, PageHeader } from 'react-bootstrap'
 
 import { validateUser, getValidationContext} from '../api/users'
 import SimpleForm from './SimpleForm'
@@ -47,7 +47,7 @@ export default class Login extends SimpleForm {
 
         { this.renderError() }
 
-        <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
+        <FormLayout horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
 
           <FormItem
             name="email" type="email" autoComplete="email" label="Email"
@@ -70,7 +70,7 @@ export default class Login extends SimpleForm {
               <Button type="submit">Sign in</Button>
             </Col>
           </FormGroup>
-        </Form>
+        </FormLayout>
 
 
         <p>Need an account? <Link to="/signup">Sign up!</Link></p>

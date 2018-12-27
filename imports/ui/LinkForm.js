@@ -1,6 +1,6 @@
 import React from 'react'
 import { Meteor } from 'meteor/meteor'
-import { Alert, Button, Col, Form, FormGroup } from 'react-bootstrap'
+import { Button, Col, Form, FormGroup } from 'react-bootstrap'
 
 import { getValidationContext } from '../api/links'
 import SimpleForm from './SimpleForm'
@@ -46,7 +46,7 @@ export default class LinkForm extends SimpleForm {
       <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
 
         { this.renderError() }
-        
+
         <FormItem
           name="url" type="text" label="Link URL"
           placeholder="URL"

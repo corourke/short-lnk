@@ -42,6 +42,17 @@ Meteor.methods({
       userId: this.userId,
       url: link.url,
       name: link.name,
+      visible: true,
     })
+  },
+  'links.setVisibility'(_id, visible) {
+    if(!this.userId) {
+      throw new Meteor.Error('not-authorized', 'User must be logged in')
+    }
+    new SimpleSchema({
+      _id: { type: String, min: 1 },
+      visible: {type: Boolean},
+    }).validate({_id, visible})
+    Links.update({ _id, userId: this.userId }, { $set: {visible} })
   },
 })
