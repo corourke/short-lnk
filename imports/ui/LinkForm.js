@@ -48,20 +48,10 @@ export default class LinkForm extends SimpleForm {
         { this.renderError() }
 
         <FormItem
-          name="url" type="text" label="Link URL"
-          placeholder="URL"
-          help={this.state.VC.keyErrorMessage('url')}
-          value={this.state.fields.url}
-          onChange={() => this.handleChange.bind(this)}
-          onValidate={() => this.getValidationState('url')}
+          simpleForm={this} name="url" type="text" label="Link URL" placeholder="URL"
         />
         <FormItem
-          name="name" type="text" label="Link Name"
-          placeholder="Name"
-          help={this.state.VC.keyErrorMessage('name')}
-          value={this.state.fields.name}
-          onChange={() => this.handleChange.bind(this)}
-          onValidate={() => this.getValidationState('name')}
+          simpleForm={this} name="name" type="text" label="Link Name" placeholder="Name"
         />
         <FormGroup>
           <Col smOffset={2} sm={10}>

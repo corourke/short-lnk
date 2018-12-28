@@ -52,29 +52,11 @@ export default class Signup extends SimpleForm {
         { this.renderError() }
 
         <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
-          <FormItem
-            name="email" type="email" autoComplete="email" label="Email"
-            help={this.state.VC.keyErrorMessage('email')}
-            value={this.state.fields.email}
-            onChange={() => this.handleChange.bind(this)}
-            onValidate={() => this.getValidationState('email')}
-          />
 
-          <FormItem
-            name="password" type="password" autoComplete="new-password" label="Password"
-            help={this.state.VC.keyErrorMessage('password')}
-            value={this.state.fields.password}
-            onChange={() => this.handleChange.bind(this)}
-            onValidate={() => this.getValidationState('password')}
-          />
-
-          <FormItem
-            name="fullName" type="text" label="Real Name"
-            help={this.state.VC.keyErrorMessage('fullName')}
-            value={this.state.fields.fullName}
-            placeholder="What should we call you?"
-            onChange={() => this.handleChange.bind(this)}
-            onValidate={() => this.getValidationState('fullName')}
+          <FormItem simpleForm={this} name="email" type="email" />
+          <FormItem simpleForm={this} name="password" type="password" autoComplete="new-password" />
+          <FormItem simpleForm={this} name="fullName" type="text"
+            label="Real Name" placeholder="What should we call you?"
           />
 
           <FormGroup>

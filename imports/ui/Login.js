@@ -49,20 +49,10 @@ export default class Login extends SimpleForm {
 
         <FormLayout horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
 
-          <FormItem
-            name="email" type="email" autoComplete="email" label="Email"
-            help={this.state.VC.keyErrorMessage('email')}
-            value={this.state.fields.email}
-            onChange={() => this.handleChange.bind(this)}
-            onValidate={() => this.getValidationState('email')}
-          />
+          <FormItem simpleForm={this} name="email" type="email" />
 
-          <FormItem
-            name="password" type="password" autoComplete="new-password" label="Password"
-            help={this.state.VC.keyErrorMessage('password')}
-            value={this.state.fields.password}
-            onChange={() => this.handleChange.bind(this)}
-            onValidate={() => this.getValidationState('password')}
+          <FormItem simpleForm={this} name="password" type="password"
+            autoComplete="new-password"
           />
 
           <FormGroup>

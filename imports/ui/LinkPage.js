@@ -5,6 +5,7 @@ import { Meteor } from 'meteor/meteor'
 import LinkForm from './LinkForm'
 import LinksList from './LinksList'
 import PrivateHeader from './PrivateHeader'
+import LinksListFilters from './LinksListFilters'
 
 export default class LinkPage extends React.Component {
 
@@ -15,6 +16,7 @@ export default class LinkPage extends React.Component {
     return (
       <div>
         <PrivateHeader>Links</PrivateHeader>
+        <LinksListFilters />
         <LinksList />
         <LinkForm />
       </div>
