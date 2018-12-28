@@ -55,9 +55,11 @@ export default class LinkForm extends SimpleForm {
   render() {
     return (
       <div>
-        <Button bsStyle="primary" onClick={this.handleShow.bind(this)}>
-          Add Link
-        </Button>
+        <p>
+          <Button bsStyle="primary" onClick={this.handleShow.bind(this)}>
+            Add Link
+          </Button>
+        </p>
 
         <Modal show={this.state.show} onHide={this.handleClose.bind(this)}>
           <Modal.Header>

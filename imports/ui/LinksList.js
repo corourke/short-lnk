@@ -2,6 +2,7 @@ import React from 'react'
 import { Meteor } from 'meteor/meteor'
 import { Tracker } from 'meteor/tracker'
 import { Session } from 'meteor/session'
+import { Col, Grid, Row } from 'react-bootstrap'
 
 import { Links } from '../api/links'
 import LinksListItem from './LinksListItem'
@@ -31,7 +32,9 @@ export default class LinksList extends React.Component {
   renderLinksList() {
     return this.state.links.map( (link) => {
       return (
-        <LinksListItem key={link._id} {...link} />
+        <Col key={link._id} xs={12} md={6} lg={6}>
+          <LinksListItem key={link._id} {...link} />
+        </Col>
       )
     })
   }
