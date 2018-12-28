@@ -17,8 +17,8 @@ export default class LinkPage extends React.Component {
       <div>
         <PrivateHeader>Links</PrivateHeader>
         <LinksListFilters />
-        <LinksList />
         <LinkForm />
+        <LinksList />
       </div>
     )
   }

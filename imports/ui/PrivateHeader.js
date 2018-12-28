@@ -9,6 +9,25 @@ import { LinkContainer } from 'react-router-bootstrap'
 class PrivateHeader extends React.Component {
 
   // TODO: This menu bar doesn't really make sense for this application
+  renderMenu() {
+    <Nav bsStyle="pills" activeKey={2}>
+      <LinkContainer to="/links">
+        <NavItem eventKey={1}>
+          Links
+        </NavItem>
+      </LinkContainer>
+      <LinkContainer to="/login">
+        <NavItem eventKey={2}>
+          Login
+        </NavItem>
+      </LinkContainer>
+      <LinkContainer to="/signup">
+        <NavItem eventKey={3}>
+          Signup
+        </NavItem>
+      </LinkContainer>
+    </Nav>
+  }
 
   render() {
     return (
@@ -18,31 +37,13 @@ class PrivateHeader extends React.Component {
             <Navbar.Brand>Short-Lnk</Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav bsStyle="pills" activeKey={2}>
-              <LinkContainer to="/links">
-                <NavItem eventKey={1}>
-          Links
-                </NavItem>
-              </LinkContainer>
-              <LinkContainer to="/login">
-                <NavItem eventKey={2}>
-          Login
-                </NavItem>
-              </LinkContainer>
-              <LinkContainer to="/signup">
-                <NavItem eventKey={3}>
-          Signup
-                </NavItem>
-              </LinkContainer>
-            </Nav>
 
-            <Navbar.Form pullRight style={{paddingRight: '0px'}}>
-              <Button onClick={ () => Meteor.logout(() => this.props.history.push('/login')) }>
+          <Navbar.Form pullRight style={{paddingRight: '0px'}}>
+            <Button onClick={ () => Meteor.logout(() => this.props.history.push('/login')) }>
               Log Out
-              </Button>
-            </Navbar.Form>
-          </Navbar.Collapse>
+            </Button>
+          </Navbar.Form>
+
         </Navbar>
 
         <PageHeader>{this.props.children}</PageHeader>

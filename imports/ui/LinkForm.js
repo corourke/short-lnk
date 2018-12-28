@@ -1,6 +1,6 @@
 import React from 'react'
 import { Meteor } from 'meteor/meteor'
-import { Button, Col, Form, FormGroup } from 'react-bootstrap'
+import { Button, Col, Form, FormGroup, Modal } from 'react-bootstrap'
 
 import { getValidationContext } from '../api/links'
 import SimpleForm from './SimpleForm'
@@ -17,17 +17,19 @@ export default class LinkForm extends SimpleForm {
       shortlnk: '',
     }
     this.state.VC = getValidationContext()
+    this.state.show = false
   }
 
   onSubmit(e) {
     e.preventDefault()
     const { url, name } = this.state.fields
     const link = { url, name }
-    if(this.state.VC.validate(link) == false) {
+    if(this.state.VC.validate(link, { keys: ['url', 'name']}) == false) {
       this.setState({
         error: 'Please correct the invalid fields below',
         showingFieldValidations: true,
       })
+      console.log('Form Errors: ', this.state.VC.validationErrors())
       return
     }
     Meteor.call('links.insert', link, (err) => {
@@ -35,31 +37,54 @@ export default class LinkForm extends SimpleForm {
         this.setState({ error: err.message })
       } else {
         this.setState({ fields: { name: '', url: '', shortlnk: '' }})
-        this.clearFieldErrors()
+        this.handleClose()
       }
     })
 
   }
 
+  handleClose() {
+    this.setState({ show: false })
+    this.clearFieldErrors()
+  }
+
+  handleShow() {
+    this.setState({ show: true })
+  }
+
   render() {
     return (
-      <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
+      <div>
+        <Button bsStyle="primary" onClick={this.handleShow.bind(this)}>
+          Add Link
+        </Button>
 
-        { this.renderError() }
+        <Modal show={this.state.show} onHide={this.handleClose.bind(this)}>
+          <Modal.Header>
+            <Modal.Title>Add Link</Modal.Title>
+          </Modal.Header>
+          <Form horizontal noValidate onSubmit={this.onSubmit.bind(this)}>
+            <Modal.Body>
 
-        <FormItem
-          simpleForm={this} name="url" type="text" label="Link URL" placeholder="URL"
-        />
-        <FormItem
-          simpleForm={this} name="name" type="text" label="Link Name" placeholder="Name"
-        />
-        <FormGroup>
-          <Col smOffset={2} sm={10}>
-            <Button type="submit">Add Link</Button>
-          </Col>
-        </FormGroup>
+              { this.renderError() }
 
-      </Form>
+              <FormItem
+                simpleForm={this} name="url" type="text" label="Link URL" placeholder="URL"
+              />
+              <FormItem
+                simpleForm={this} name="name" type="text" label="Link Name" placeholder="Name"
+              />
+
+            </Modal.Body>
+
+            <Modal.Footer>
+              <Button onClick={this.handleClose.bind(this)}>Close</Button>
+              <Button type="submit">Add Link</Button>
+            </Modal.Footer>
+          </Form>
+        </Modal>
+      </div>
+
     )
   }
 }
