@@ -32,7 +32,7 @@ class PrivateHeader extends React.Component {
   render() {
     return (
       <div>
-        <Navbar fluid>
+        <Navbar fluid style={{backgroundColor: '#5E3DA6'}}>
           <Navbar.Header>
             <Navbar.Brand>Short-Lnk</Navbar.Brand>
             <Navbar.Toggle />
